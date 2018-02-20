@@ -5,11 +5,22 @@
         "run-as-root": "Needs access to the device uuid"
     },
     "options": [{
-        "title": "Logo (bottom right corner)",
-        "ui_width": 6,
-        "name": "logo",
-        "type": "resource",
-        "valid": ["image"],
-        "default": "empty.png"
+        "title": "Headline font",
+        "ui_width": 4,
+        "name": "headline_font",
+        "type": "font",
+        "default": "TeleGroteskHeadline-Ultra.ttf"
+    },
+    {
+        "title": "Meta-data URL",
+        "ui_width": 10,
+        "name": "metaurl",
+        "type": "string"
+    },
+    {
+        "title": "Authentication Token",
+        "ui_width": 10,
+        "name": "authtoken",
+        "type": "string"
     }]
 }

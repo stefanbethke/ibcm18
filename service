@@ -1,7 +1,11 @@
 #!/usr/bin/python
 import requests, time, traceback, os, sys, socket, json
+from hosted import CONFIG
 from qrcode.image.pure import PymagingImage
 from qrcode.main import QRCode
+from ibcm18 import UpdateContent
+
+CONFIG.restart_on_update()
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
@@ -50,15 +54,15 @@ def fetch_info():
     )))
     detail_page_qr.update_img(info['detail_url'])
 
+# 1
 if __name__ == "__main__":
-    interval = 10
+    uc = UpdateContent(CONFIG['metaurl'], authtoken=CONFIG['authtoken'])
     while 1:
         try:
-            fetch_info()
-            interval = 60
-        except:
+            #fetch_info()
+            if uc.update():
+                send('content', '')
+        except Exception as e:
             traceback.print_exc()
-            interval = 30
         finally:
-            time.sleep(interval)
-
+            time.sleep(10)

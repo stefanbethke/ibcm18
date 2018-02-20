@@ -1,6 +1,6 @@
 {
     "name": "IB CM 18",
-    "author": "Stefan Bethke <stefan.bethke@t-systems.com",
+    "author": "Stefan Bethke <stefan.bethke@t-systems.com>",
     "desc": "Experiment with Info Beamer.",
     "repository": "https://github.com/stefanbethke/ibcm18",
     "version": "2018-02-20"

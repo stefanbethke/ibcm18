@@ -1,22 +1,31 @@
 gl.setup(NATIVE_WIDTH, NATIVE_HEIGHT)
+--
+util.init_hosted()
+
+local json = require "json"
+local easing = require "easing"
 
 local font = resource.load_font "Ubuntu-C.ttf"
-local json = require "json"
+local content = {["loaded"] = false}
+local content_res = {}
+util.auto_loader(content_res)
+local current_page = 1
+local font_size = 100
+local margin = 50
+local secs_per_page = 10
 
-local serial = sys.get_env "SERIAL"
-local location = "<please wait>"
-local description = "<please wait>"
-
-local res = util.resource_loader{
-    "device_details.png";
-}
-
-local logo = resource.create_colored_texture(0,0,0,0)
 local white = resource.create_colored_texture(1,1,1,1)
+local magenta = resource.create_colored_texture(226/255, 0/255, 116/255, 1) -- #e20074
 
-util.file_watch("config.json", function(raw)
-    local config = json.decode(raw)
-    logo = resource.load_image(config.logo.asset_name)
+util.json_watch("config.json", function(config)
+    font = resource.load_font(config.headline_font.asset_name)
+end)
+
+util.json_watch("content.json", function(c)
+    content = c
+    if content.delay then
+      secs_per_page = content.delay
+    end
 end)
 
 util.data_mapper{
@@ -24,25 +33,74 @@ util.data_mapper{
         info = json.decode(info)
         location = info.location
         description = info.description
+    end,
+    ["content"] = function(info)
     end
 }
 
-local function draw_info()
-    local s = HEIGHT/10
-    font:write(s, s*0.5, "Screen Information", s, 1,1,1,1)
-    white:draw(0, s*1.6-2, WIDTH, s*1.6+2, 0.2)
 
-    local w = font:write(s, s*1.75, "Serial: ", s, 1,1,1,1)
-    font:write(s+w, s*1.75, serial, s, 1,1,.5,1)
-    font:write(s, s*2.75, "Description: "..description, s, 1,1,1,1)
-    font:write(s, s*3.75, "Location: "..location, s, 1,1,1,1)
-    if res.device_details then
-        res.device_details:draw(s, s*5, s*5.5, s*9.5)
-    end
-    util.draw_correct(logo, WIDTH-s*5.5, s*5, WIDTH-s, s*9.5)
+local function draw_text(text, align)
+  local l = font:width(text, font_size)
+
+  -- horizonal alignment: 50px from the left, then 0, 1, or 2 times the
+  --   half the remaining width minus the length of the string
+  local xa = math.floor(math.fmod(align-1, 3)) / 2
+  local x = margin + xa * (HEIGHT - 2*margin - l)
+  -- vertical alignment: 50px from top, then 0, 1, or 2 times half the height
+  local ya = math.floor((align-1) / 3) / 2
+  local y = margin + ya * (WIDTH - 2*margin - font_size)
+
+  font:write(x, y, text, font_size, 1,1,1,1)
+  -- magenta:draw(x, y, x+2, y+font_size)
+  -- magenta:draw(x+l, y, x+l-2, y+font_size)
+  -- magenta:draw(x, y, x+l, y+2)
+  -- magenta:draw(x, y+font_size-2, x+l, y+font_size)
+  -- font:write(margin, 150, "align="..align..",x="..tostring(x)..",y="..tostring(y), 50, 1,1,1,1)
+  -- font:write(margin, 210, "l="..tostring(l)..",xa="..tostring(xa)..",ya="..tostring(ya), 50, 1,1,1,1)
 end
 
+
+local function draw_price(text, tween)
+  local l = font:width(text, font_size*2)
+  --local x = (HEIGHT+l*2)*(1-tween)-l
+  local b = WIDTH + l
+  local x = easing.outInCubic(tween, b, -l*3 - b, 1)
+  font:write(x, (WIDTH+font_size)/3*2, text, font_size*2, 226/255, 0/255, 116/255, 1)
+end
+
+
+local function draw_page()
+  if not content["loaded"] then
+    font:write(50, 50, "Waiting for content...", 50, 1,1,1,1)
+    return
+  end
+  current_page = math.floor(math.fmod(sys.now()/secs_per_page, #content["pages"]) + 1)
+  tween = math.fmod(sys.now(), secs_per_page) / secs_per_page
+  --font:write(50, 50, "page " .. tostring(current_page), 50, 1,1,1,1)
+  if content_res[content["pages"][current_page]["image_name"]] then
+    content_res[content["pages"][current_page]["image_name"]]:draw(0, 0, HEIGHT, WIDTH)
+    -- magenta:draw(50, 1400, HEIGHT-350, WIDTH-50, 0.5)
+    -- magenta:draw(50, 1500, HEIGHT-50, WIDTH-50, 0.5)
+    -- magenta:draw(50, 1620, HEIGHT-250, WIDTH-50)
+    local p = content["pages"][current_page]
+    draw_text(p["teaser_text"], p["align"])
+    draw_price(p["price"], tween)
+    -- local i = 0
+    -- for k, v in string.gmatch(content["pages"][current_page]["teaser_text"], "([^|\n]+)") do
+    --   font:write(80, 1660 + 90*i, k, 100, 1,1,1,1)
+    --   i = i + 1
+    -- end
+  else
+    font:write(50, 50, "Image "..content["pages"][current_page]["image_name"].." not yet loaded", 50, 1,1,1,1)
+  end
+end
+
+
 function node.render()
-    gl.clear(0,0,0,1)
-    draw_info()
+    gl.clear(226/255, 0/255, 116/255, 1)
+    -- turn to portrait
+    gl.rotate(270, 0, 0, 1)
+    gl.translate(HEIGHT, -WIDTH)
+    --draw_info()
+    draw_page()
 end
