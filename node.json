@@ -1,5 +1,5 @@
 {
-    "name": "Device Info Screen",
+    "name": "IB CM 2018",
     "permissions": {
         "unboxed": "Needs access to the device uuid",
         "run-as-root": "Needs access to the device uuid"
