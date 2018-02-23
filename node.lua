@@ -110,15 +110,11 @@ local function draw_page()
 end
 
 local function draw_logo()
-  gl.pushMatrix()
-  gl.translate(HEIGHT, 0)
-  gl.rotate(90, 0, 0, 1)
-  local w = 556
-  local h = 43
-  local x = (WIDTH-w*2)/2
-  local y = HEIGHT-h*2-30
-  logo:draw(x, y, x+w*2, y+h*2)
-  gl.popMatrix()
+  local w = 480 * 2
+  local h = 518 * 2
+  local x = (HEIGHT-w)/4
+  local y = WIDTH-h-30
+  logo:draw(x, y, x+w, y+h)
 end
 
 
