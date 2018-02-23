@@ -113,7 +113,7 @@ local function draw_logo()
   local w = 480
   local h = 518
   local x = 10
-  local y = 10 + (WIDTH + h) / 2
+  local y = 10 + (WIDTH - h) / 2
   logo:draw(x, y, x+w, y+h)
 end
 
