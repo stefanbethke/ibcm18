@@ -36,6 +36,7 @@ class UpdateContent:
         try:
             j = r.json()
         except ValueError as e:
+            print("Error parsing content.json: {}".format(e), file=sys.stderr)
             j = self.loadJson()
         print("SERVICE loaded content metadata", file=sys.stderr)
         for u in j['pages']:
@@ -79,6 +80,6 @@ class UpdateContent:
 
 
 if __name__ == "__main__":
-    uc = UpdateContent("https://home.lassitu.de/ibcm18/testdata/metadata.json", "foo")
+    uc = UpdateContent("https://preview.development.cms.tractorsupply-proxy.coremedia.com/blueprint/servlet/aurora/6786-6786?view=fragmentPreview&p13n_test=true&p13n_testcontext=0&userVariant=406", "ibcm18pa")
     uc.update()
     uc.update()
