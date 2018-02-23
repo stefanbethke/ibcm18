@@ -14,11 +14,13 @@ local font_size = 100
 local margin = 50
 local secs_per_page = 10
 
+local logo = resource.create_colored_texture(0,0,0,0)
 local white = resource.create_colored_texture(1,1,1,1)
 local magenta = resource.create_colored_texture(226/255, 0/255, 116/255, 1) -- #e20074
 
 util.json_watch("config.json", function(config)
     font = resource.load_font(config.headline_font.asset_name)
+    logo = resource.load_image(config.logo.asset_name)
 end)
 
 util.json_watch("content.json", function(c)
@@ -77,6 +79,17 @@ local function draw_page()
   current_page = math.floor(math.fmod(sys.now()/secs_per_page, #content["pages"]) + 1)
   tween = math.fmod(sys.now(), secs_per_page) / secs_per_page
   --font:write(50, 50, "page " .. tostring(current_page), 50, 1,1,1,1)
+  local r
+  if tween <= 0.1 then
+    r = -90 + tween * 900
+  elseif tween >= 0.9 then
+    r = (tween - 0.9) * 900
+  else
+    r = 0
+  end
+  gl.translate(HEIGHT/2, 0)
+  gl.rotate(r, 0, 1, 0)
+  gl.translate(-HEIGHT/2, 0)
   if content_res[content["pages"][current_page]["image_name"]] then
     content_res[content["pages"][current_page]["image_name"]]:draw(0, 0, HEIGHT, WIDTH)
     -- magenta:draw(50, 1400, HEIGHT-350, WIDTH-50, 0.5)
@@ -95,12 +108,28 @@ local function draw_page()
   end
 end
 
+local function draw_logo()
+  gl.pushMatrix()
+  gl.translate(HEIGHT, 0)
+  gl.rotate(90, 0, 0, 1)
+  local w = 556
+  local h = 43
+  local x = (WIDTH-w*2)/2
+  local y = HEIGHT-h*2-30
+  logo:draw(x, y, x+w*2, y+h*2)
+  gl.popMatrix()
+end
+
+
+local fov = math.atan2(HEIGHT, WIDTH*2) * 360 / math.pi
 
 function node.render()
-    gl.clear(226/255, 0/255, 116/255, 1)
+    gl.clear(0.75, 0.75, 0.75, 1)
+    gl.perspective(fov, WIDTH/2, HEIGHT/2, -WIDTH,
+                        WIDTH/2, HEIGHT/2, 0)
     -- turn to portrait
     gl.rotate(270, 0, 0, 1)
-    gl.translate(HEIGHT, -WIDTH)
-    --draw_info()
+    gl.translate(-HEIGHT, 0)
+    draw_logo()
     draw_page()
 end
