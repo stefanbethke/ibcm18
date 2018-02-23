@@ -110,10 +110,10 @@ local function draw_page()
 end
 
 local function draw_logo()
-  local w = 480 * 2
-  local h = 518 * 2
-  local x = (HEIGHT-w)/4
-  local y = WIDTH-h-30
+  local w = 480
+  local h = 518
+  local x = 10
+  local y = 10 + (WIDTH + h) / 2
   logo:draw(x, y, x+w, y+h)
 end
 
