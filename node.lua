@@ -121,7 +121,7 @@ end
 local fov = math.atan2(HEIGHT, WIDTH*2) * 360 / math.pi
 
 function node.render()
-    gl.clear(0.75, 0.75, 0.75, 1)
+    gl.clear(0.66, 0.66, 0.66, 1)
     gl.perspective(fov, WIDTH/2, HEIGHT/2, -WIDTH,
                         WIDTH/2, HEIGHT/2, 0)
     -- turn to portrait
