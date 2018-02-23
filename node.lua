@@ -22,6 +22,7 @@ local background_color = {0.5, 0.5, 0.5, 1}
 util.json_watch("config.json", function(config)
     font = resource.load_font(config.headline_font.asset_name)
     logo = resource.load_image(config.logo.asset_name)
+    background_color = config.background_color.rgba
 end)
 
 util.json_watch("content.json", function(c)
