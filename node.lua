@@ -63,11 +63,12 @@ end
 
 
 local function draw_price(text, tween)
-  local l = font:width(text, font_size*2)
+  local s = font_size*2
+  local l = font:width(text, s)
   --local x = (HEIGHT+l*2)*(1-tween)-l
   local b = WIDTH + l
   local x = easing.outInCubic(tween, b, -l*3 - b, 1)
-  font:write(x, (WIDTH+font_size)/3*2, text, font_size*2, 226/255, 0/255, 116/255, 1)
+  font:write(x, (WIDTH+s)/3*2, text, s, 226/255, 0/255, 116/255, 1)
 end
 
 
