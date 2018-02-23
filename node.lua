@@ -17,10 +17,12 @@ local secs_per_page = 10
 local logo = resource.create_colored_texture(0,0,0,0)
 local white = resource.create_colored_texture(1,1,1,1)
 local magenta = resource.create_colored_texture(226/255, 0/255, 116/255, 1) -- #e20074
+local background = resource.create_colored_texture(0.5, 0.5, 0.5, 1)
 
 util.json_watch("config.json", function(config)
     font = resource.load_font(config.headline_font.asset_name)
     logo = resource.load_image(config.logo.asset_name)
+    --background = resource.create_colored_texture(config.background_color.)
 end)
 
 util.json_watch("content.json", function(c)

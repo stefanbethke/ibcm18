@@ -6,17 +6,23 @@
     },
     "options": [{
         "title": "Headline font",
-        "ui_width": 4,
+        "ui_width": 10,
         "name": "headline_font",
         "type": "font",
         "default": "Ubuntu-C.ttf"
     },{
         "title": "Logo",
-        "ui_width": 4,
+        "ui_width": 10,
         "name": "logo",
         "type": "resource",
         "valid": ["image"],
         "default": "empty.png"
+    },{
+        "type": "color",
+        "title": "Background color",
+        "name": "background_color",
+        "ui_width": 4,
+        "default": [0.5,0.5,0.5,1]
     },{
         "title": "Meta-data URL",
         "ui_width": 10,
